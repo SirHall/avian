@@ -11,6 +11,7 @@ use bevy::{
     ecs::{intern::Interned, schedule::ScheduleLabel, system::SystemId},
     prelude::*,
 };
+use collider::hierarchy::update_collider_parents;
 
 /// A plugin for handling generic collider backend logic.
 ///
@@ -214,7 +215,7 @@ impl<C: ScalableCollider> Plugin for ColliderBackendPlugin<C> {
         // Update collider parents for colliders that are on the same entity as the rigid body.
         app.add_systems(
             self.schedule,
-            update_root_collider_parents::<C>
+            update_root_collider_parents::<C>.before(update_collider_parents)
                 .after(PrepareSet::InitColliders)
                 .before(PrepareSet::Finalize),
         );
